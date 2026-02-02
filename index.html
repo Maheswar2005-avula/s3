@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For My Everything</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@1,400;1,700&family=Montserrat:wght@200;400;600&display=swap');
+
+        :root {
+            --gold: #d4af37;
+            --bg-dark: #0a0a0a;
+            --glass: rgba(255, 255, 255, 0.05);
+            --gold-glow: rgba(212, 175, 55, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background: var(--bg-dark);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 3D Emoji Parallax Background */
+        #hero-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        .main-card {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 440px;
+            padding: 50px 30px;
+            border-radius: 40px;
+            background: var(--glass);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            text-align: center;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.9), inset 0 0 20px var(--gold-glow);
+        }
+
+        .screen { display: none; opacity: 0; transform: translateY(20px) scale(0.98); transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1); }
+        .screen.active { display: block; opacity: 1; transform: translateY(0) scale(1); }
+
+        .title {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 2.6rem;
+            color: var(--gold);
+            margin-bottom: 25px;
+            font-style: italic;
+            text-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        .text-content {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            font-weight: 200;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 45px;
+            min-height: 100px;
+        }
+
+        .btn-yes {
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 18px 0;
+            width: 100%;
+            border-radius: 100px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: 0.4s;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+
+        #no-btn {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+            border: none;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: 0.1s;
+        }
+
+        #no-msg {
+            color: #ff7675;
+            font-size: 0.85rem;
+            margin-top: 15px;
+            font-style: italic;
+            opacity: 0;
+            transition: 0.5s;
+        }
+
+        .heart-loader { font-size: 4rem; margin-bottom: 20px; color: var(--gold); }
+    </style>
+</head>
+<body>
+
+<canvas id="hero-canvas"></canvas>
+
+<div class="main-card">
+    <div class="screen active" id="s1">
+        <div class="title">Harshitha,</div>
+        <div class="text-content" id="t1"></div>
+        <button class="btn-yes" onclick="next(1, 2)">Walk with me</button>
+    </div>
+
+    <div class="screen" id="s2">
+        <div class="title">My Best Friend</div>
+        <div class="text-content" id="t2"></div>
+        <button class="btn-yes" onclick="next(2, 3)">I feel it too</button>
+    </div>
+
+    <div class="screen" id="s3">
+        <div class="title">My Soulmate</div>
+        <div class="text-content" id="t3"></div>
+        <button class="btn-yes" onclick="next(3, 4)">Keep going...</button>
+    </div>
+
+    <div class="screen" id="s4">
+        <div class="title">Be Mine?</div>
+        <div class="text-content">In a world full of temporary things, I want to be your permanent. Will you be my Valentine and my forever?</div>
+        <button class="btn-yes" onclick="celebrate()">YES, FOREVER ❤️</button>
+        <button id="no-btn" onmouseover="dodge()" onclick="dodge()">No</button>
+        <div id="no-msg">I won’t tell anyone, but YES is my favorite 😉💗❤️</div>
+    </div>
+
+    <div class="screen" id="s5">
+        <div class="heart-loader">💍</div>
+        <div class="title">I Am Yours.</div>
+        <div class="text-content">You've just made me the happiest person in existence. I promise to love, honor, and cherish you every single day. <br><br><b>Forever.</b></div>
+    </div>
+</div>
+
+<script>
+    const script = [
+        "I’ve spent thousands of hours talking to you, but lately, words don't seem enough to describe how I feel.",
+        "You aren't just my best friend. You are the person who makes my world feel safe, warm, and meaningful.",
+        "I’ve realized that I don't just want to share my secrets with you. I want to share my entire life with you."
+    ];
+
+    function type(text, elId) {
+        let i = 0;
+        const el = document.getElementById(elId);
+        el.innerHTML = "";
+        const timer = setInterval(() => {
+            if (i < text.length) {
+                el.innerHTML += text.charAt(i);
+                i++;
+            } else {
+                clearInterval(timer);
+            }
+        }, 35);
+    }
+
+    window.onload = () => type(script[0], "t1");
+
+    function next(curr, nextId) {
+        document.getElementById('s' + curr).classList.remove('active');
+        setTimeout(() => {
+            document.getElementById('s' + nextId).classList.add('active');
+            if (script[nextId - 1]) type(script[nextId - 1], "t" + nextId);
+        }, 500);
+    }
+
+    // --- High-Performance Particle Engine ---
+    const canvas = document.getElementById('hero-canvas');
+    const ctx = canvas.getContext('2d');
+    const icons = ['❤️','🥰','😍','💕','🫰','🫶','🫂','🩷','💌','🏩','💐','❤️‍🔥','💓','💜','🌹','💘'];
+    let particles = [];
+
+    function init() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    class Particle {
+        constructor() {
+            this.reset();
+            this.y = Math.random() * canvas.height;
+        }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + 100;
+            this.emoji = icons[Math.floor(Math.random() * icons.length)];
+            this.size = Math.random() * 20 + 15;
+            this.speed = Math.random() * 1.5 + 0.5;
+            this.opacity = Math.random() * 0.4 + 0.1;
+        }
+        draw() {
+            ctx.globalAlpha = this.opacity;
+            ctx.font = `${this.size}px serif`;
+            ctx.fillText(this.emoji, this.x, this.y);
+        }
+        update() {
+            this.y -= this.speed;
+            if (this.y < -100) this.reset();
+        }
+    }
+
+    for (let i = 0; i < 40; i++) particles.push(new Particle());
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animate);
+    }
+
+    init(); animate();
+    window.onresize = init;
+
+    // --- The Masterpiece Dodge ---
+    function dodge() {
+        const no = document.getElementById('no-btn');
+        const msg = document.getElementById('no-msg');
+        msg.style.opacity = "1";
+        
+        const maxX = window.innerWidth - no.offsetWidth;
+        const maxY = window.innerHeight - no.offsetHeight;
+        
+        no.style.position = "fixed";
+        no.style.left = Math.random() * maxX + "px";
+        no.style.top = Math.random() * maxY + "px";
+        no.style.filter = "blur(1px)";
+        setTimeout(() => no.style.filter = "blur(0)", 100);
+    }
+
+    function celebrate() {
+        next(4, 5);
+        for(let i=0; i<60; i++) particles.push(new Particle());
+    }
+</script>
+
+</body>
+</html>
